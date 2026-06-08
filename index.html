@@ -442,10 +442,13 @@ function showTab(name){
 /* ---- Per-tab filter: Overview ---- */
 function applyOverviewFilters(){
   let y=CUR.yearly||[];
-  const yf=+document.getElementById('ov-year-from').value||0;
-  const yt=+document.getElementById('ov-year-to').value||9999;
-  if(yf||yt<9999) y=y.filter(r=>(+r.year>=yf||!yf)&&(+r.year<=yt||yt===9999));
+  // FIX: independent year-from / year-to guards (no yt||9999 defaulting to 0)
+  const yfVal=document.getElementById('ov-year-from').value;
+  const ytVal=document.getElementById('ov-year-to').value;
+  if(yfVal) y=y.filter(r=>+r.year>=+yfVal);
+  if(ytVal) y=y.filter(r=>+r.year<=+ytVal);
 
+  // Year-dependent charts
   updC('c-yearly',y.map(r=>r.year),[
     {type:'bar',label:'Matches',data:y.map(r=>r.matches),backgroundColor:'rgba(79,127,232,.65)',borderColor:'#4f7fe8',borderWidth:1,borderRadius:4,yAxisID:'y'},
     {type:'line',label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(2)),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:0.3},
@@ -457,36 +460,69 @@ function applyOverviewFilters(){
     {label:'Avg Goals',data:y.map(r=>r.avg_goals),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3,yAxisID:'y2'},
   ]);
 
-  // Result focus highlights monthly chart
+  // FIX: Result focus now updates donut + monthly + upset (all 3 charts react)
   const rf=document.getElementById('ov-result').value;
+  const k=CUR.kpis||{};
   const mo=CUR.monthly||[];
-  if(rf==='home'){
-    updC('c-monthly',mo.map(m=>m.month_name),[
-      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.25)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
-    ]);
-  } else if(rf==='draw'){
-    updC('c-monthly',mo.map(m=>m.month_name),[
-      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'rgba(249,199,79,.2)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
-    ]);
-  } else if(rf==='away'){
-    updC('c-monthly',mo.map(m=>m.month_name),[
-      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'rgba(242,95,92,.2)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
-    ]);
-  } else {
-    updC('c-monthly',mo.map(m=>m.month_name),[
-      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
-      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
-      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
-    ]);
-  }
+  const u=CUR.upset||[];
+
+  // Opacity maps: highlight selected, dim others
+  const full=['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'];
+  const dimmed=['rgba(62,207,142,.18)','rgba(249,199,79,.18)','rgba(242,95,92,.18)'];
+  const focusBg={
+    all:   full,
+    home:  ['rgba(62,207,142,.95)',dimmed[1],dimmed[2]],
+    draw:  [dimmed[0],'rgba(249,199,79,.95)',dimmed[2]],
+    away:  [dimmed[0],dimmed[1],'rgba(242,95,92,.95)'],
+  };
+  updC('c-donut',['Home Win','Draw','Away Win'],[
+    {data:[k.home_win_rate||0,k.draw_rate||0,k.away_win_rate||0],
+     backgroundColor:focusBg[rf]||full,borderColor:'#161929',borderWidth:3}
+  ]);
+
+  // Upset: brighten selected bar, dim others
+  const hBg=rf==='all'||rf==='home'?'rgba(62,207,142,.85)':'rgba(62,207,142,.15)';
+  const dBg=rf==='all'||rf==='draw'?'rgba(249,199,79,.85)':'rgba(249,199,79,.15)';
+  const aBg=rf==='all'||rf==='away'?'rgba(242,95,92,.85)':'rgba(242,95,92,.15)';
+  updC('c-upset',u.map(r=>r.label),[
+    {label:'Home Win',data:u.map(r=>r.home_wins),backgroundColor:hBg,stack:'s'},
+    {label:'Draw',data:u.map(r=>r.draws),backgroundColor:dBg,stack:'s'},
+    {label:'Away Win',data:u.map(r=>r.away_wins),backgroundColor:aBg,stack:'s'},
+  ]);
+
+  // Monthly: bold selected line, ghost others
+  const mo_all=[
+    {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
+    {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+    {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+  ];
+  const mo_focus={
+    home:[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.25)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'rgba(249,199,79,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'rgba(242,95,92,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+    ],
+    draw:[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'rgba(62,207,142,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'rgba(249,199,79,.2)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'rgba(242,95,92,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+    ],
+    away:[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'rgba(62,207,142,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'rgba(249,199,79,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'rgba(242,95,92,.2)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
+    ],
+  };
+  updC('c-monthly',mo.map(m=>m.month_name), mo_focus[rf]||mo_all);
 }
 
 /* ---- Per-tab filter: Market ---- */
 function applyMarketFilters(){
   let y=CUR.yearly||[];
-  const yf=+document.getElementById('mkt-year-from').value||0;
-  const yt=+document.getElementById('mkt-year-to').value||9999;
-  if(yf||yt<9999) y=y.filter(r=>(+r.year>=yf||!yf)&&(+r.year<=yt||yt===9999));
+  const yfVal=document.getElementById('mkt-year-from').value;
+  const ytVal=document.getElementById('mkt-year-to').value;
+  if(yfVal) y=y.filter(r=>+r.year>=+yfVal);
+  if(ytVal) y=y.filter(r=>+r.year<=+ytVal);
 
   updC('c-value-trend',y.map(r=>r.year),[
     {label:'Home value',data:y.map(r=>+((r.avg_value_home||0)*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
@@ -497,12 +533,13 @@ function applyMarketFilters(){
     {label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(3)),borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
   ]);
 
-  // Margin range filter on overround dist
+  // FIX: extract lower bound properly — range is like "[1.02, 1.04)" so parseFloat directly gave NaN
   const mg=document.getElementById('mkt-margin').value;
   let od=CUR.ovr_dist||[];
-  if(mg==='tight') od=od.filter(o=>parseFloat(o.range)<1.05);
-  else if(mg==='normal') od=od.filter(o=>parseFloat(o.range)>=1.05&&parseFloat(o.range)<1.10);
-  else if(mg==='high') od=od.filter(o=>parseFloat(o.range)>=1.10);
+  const getLow=o=>parseFloat(o.range.replace('[','').split(',')[0]);
+  if(mg==='tight') od=od.filter(o=>getLow(o)<1.05);
+  else if(mg==='normal') od=od.filter(o=>getLow(o)>=1.05&&getLow(o)<1.10);
+  else if(mg==='high') od=od.filter(o=>getLow(o)>=1.10);
   updC('c-ovr-dist',od.map(o=>o.range.replace('[','').replace(')','').replace(', ','-')),[
     {data:od.map(o=>o.count),backgroundColor:'rgba(167,139,250,.75)',borderWidth:0,borderRadius:4}
   ]);
@@ -511,31 +548,57 @@ function applyMarketFilters(){
 /* ---- Per-tab filter: Betting ROI ---- */
 function applyBettingFilters(){
   const market=document.getElementById('bet-market').value;
-  const oddsMin=parseFloat(document.getElementById('bet-odds-min').value)||0;
-  const oddsMax=parseFloat(document.getElementById('bet-odds-max').value)||999;
+  const oddsMinVal=document.getElementById('bet-odds-min').value;
+  const oddsMaxVal=document.getElementById('bet-odds-max').value;
+  const oddsMin=oddsMinVal?parseFloat(oddsMinVal):0;
+  const oddsMax=oddsMaxVal?parseFloat(oddsMaxVal):999;
 
+  const y=CUR.yearly||[];
+  const u=CUR.upset||[];
+
+  // FIX: always filter and update c-odds-roi; for draw/away show category ROI since bucket data is home-specific
   let or=CUR.odds_roi||[];
   if(oddsMin||oddsMax<999){
     or=or.filter(r=>{
-      const parts=r.odds_range.replace('[','').replace(')','').replace(']','').split(',').map(parseFloat);
-      return parts[0]>=oddsMin&&(parts[1]||parts[0])<=oddsMax;
+      const parts=r.odds_range.replace('[','').replace(')','').replace(']','').split(',').map(s=>parseFloat(s.trim()));
+      return (!oddsMin||parts[0]>=oddsMin)&&(!oddsMaxVal||(parts[1]||parts[0])<=oddsMax);
     });
   }
 
-  const y=CUR.yearly||[];
   if(market==='home'||market==='all'){
     updC('c-odds-roi',or.map(r=>r.odds_range),[
-      {label:'ROI %',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+      {label:'Home ROI %',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
     ]);
     set('bet-roi-label','Home bets by odds bucket — green = positive ROI');
-  }
-  if(market==='draw'){
-    set('bet-roi-label','Draw bets — ROI by odds bucket');
+  } else if(market==='draw'){
+    // FIX: update c-odds-roi with home-basis data labeled for draw context
+    updC('c-odds-roi',or.map(r=>r.odds_range),[
+      {label:'ROI % (home basis)',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(249,199,79,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+    set('bet-roi-label','Odds bucket ROI (home market basis — draw year ROI below)');
   } else if(market==='away'){
-    set('bet-roi-label','Away bets — ROI by odds bucket');
+    updC('c-odds-roi',or.map(r=>r.odds_range),[
+      {label:'ROI % (home basis)',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(79,127,232,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+    set('bet-roi-label','Odds bucket ROI (home market basis — away year ROI below)');
   }
 
-  // Year ROI trend filtered by market
+  // FIX: c-cat-roi now reflects selected market
+  if(market==='draw'){
+    updC('c-cat-roi',u.map(r=>r.label),[
+      {label:'Draw ROI %',data:u.map(r=>+(r.roi_draw*100).toFixed(2)),backgroundColor:u.map(r=>r.roi_draw>=0?'rgba(249,199,79,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+  } else if(market==='away'){
+    updC('c-cat-roi',u.map(r=>r.label),[
+      {label:'Away ROI %',data:u.map(r=>+(r.roi_away*100).toFixed(2)),backgroundColor:u.map(r=>r.roi_away>=0?'rgba(79,127,232,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+  } else {
+    updC('c-cat-roi',u.map(r=>r.label),[
+      {label:'Home ROI %',data:u.map(r=>+(r.roi_home*100).toFixed(2)),backgroundColor:u.map(r=>r.roi_home>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+  }
+
+  // Year ROI trend
   if(market==='home'){
     updC('c-yearly-roi',y.map(r=>r.year),[
       {label:'Home ROI',data:y.map(r=>+(r.roi_home*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:3},
@@ -621,17 +684,11 @@ function applyTeamFilters(){
   th=[...th].sort((a,b)=>b[hCol]-a[hCol]);
   ta=[...ta].sort((a,b)=>b[aCol]-a[aCol]);
 
-  // Show/hide sections based on view
-  const homeSection=document.getElementById('tm-home-section');
-  const awaySection=document.getElementById('tm-away-section');
-  const chartsRow=document.getElementById('tm-charts-row');
-  homeSection.style.display=(view==='away')?'none':'block';
-  awaySection.style.display=(view==='home')?'none':'block';
-  if(charts['c-team-home']) chartsRow.style.display=(view==='away')?'none':'';
-  if(charts['c-team-away']) chartsRow.style.display=(view==='home')?'none':'';
-  if(view==='home') document.getElementById('tm-charts-row').children[1].style.display='none';
-  else if(view==='away') document.getElementById('tm-charts-row').children[0].style.display='none';
-  else {document.getElementById('tm-charts-row').children[0].style.display='';document.getElementById('tm-charts-row').children[1].style.display='';}
+  // FIX: independent show/hide per section — no conflicting chartsRow writes
+  document.getElementById('tm-home-section').style.display=(view==='away')?'none':'block';
+  document.getElementById('tm-away-section').style.display=(view==='home')?'none':'block';
+  document.getElementById('tm-charts-row').children[0].style.display=(view==='away')?'none':'';
+  document.getElementById('tm-charts-row').children[1].style.display=(view==='home')?'none':'';
 
   const th15=th.slice(0,15);
   const ta15=ta.slice(0,15);
