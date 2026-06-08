@@ -15,7 +15,6 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px;line-height:1.5}
-
 .app{display:flex;flex-direction:column;min-height:100vh}
 .topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100}
 .topbar-brand h1{font-size:16px;font-weight:700;color:#fff}
@@ -23,42 +22,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 .topbar-filters{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .fg{display:flex;flex-direction:column;gap:2px}
 .fg label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
-.fg select,.fg input[type=text]{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;min-width:150px;outline:none}
+.fg select,.fg input[type=text],.fg input[type=number]{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;min-width:130px;outline:none}
 .fg select:focus,.fg input:focus{border-color:var(--blue)}
 .filter-active{border-color:var(--blue)!important;box-shadow:0 0 0 2px rgba(79,127,232,.2)}
 .btn-clear{background:rgba(242,95,92,.15);border:1px solid rgba(242,95,92,.3);color:var(--red);padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600}
 .btn-clear:hover{background:rgba(242,95,92,.25)}
-
 .tabs{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 20px;display:flex;gap:0;overflow-x:auto}
 .tab{padding:10px 16px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
 .tab:hover{color:var(--text)}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-
 .filter-banner{display:none;background:rgba(79,127,232,.1);border-bottom:1px solid rgba(79,127,232,.2);padding:7px 20px;font-size:11px;color:var(--blue)}
 .filter-banner.visible{display:block}
-
 .content{padding:var(--gap) 20px;flex:1}
 .page{display:none}.page.active{display:block}
+
+/* Per-tab filter bar */
+.tab-filters{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;padding:10px 16px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:var(--gap)}
+.tab-filters .fg select,.tab-filters .fg input{min-width:110px}
+.tab-filter-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;align-self:center;margin-right:4px}
+.tab-filter-sep{width:1px;height:28px;background:var(--border);margin:0 4px;align-self:flex-end}
+.btn-tab-clear{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer}
+.btn-tab-clear:hover{border-color:var(--blue);color:var(--text)}
 
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-bottom:var(--gap)}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
 .g21{display:grid;grid-template-columns:2fr 1fr;gap:var(--gap);margin-bottom:var(--gap)}
 .mb{margin-bottom:var(--gap)}
-
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
 .ct{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
 .cs{font-size:10px;color:var(--text2);margin-bottom:12px}
-
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:var(--gap)}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;border-top:3px solid var(--ac,var(--blue))}
 .kpi-label{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px;font-weight:600}
 .kpi-val{font-size:24px;font-weight:800;color:#fff;line-height:1;margin-bottom:2px}
 .kpi-sub{font-size:10px;color:var(--text2)}
-
 .ch{position:relative}
 .h160{height:160px}.h200{height:200px}.h220{height:220px}.h260{height:260px}.h300{height:300px}.h340{height:340px}
-
 .tbl-wrap{overflow-x:auto;margin-top:2px}
 table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
 thead th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;white-space:nowrap;user-select:none}
@@ -66,23 +66,15 @@ thead th:hover{color:var(--text)}
 tbody td{padding:7px 10px;border-bottom:1px solid rgba(37,42,69,.6);white-space:nowrap}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:rgba(79,127,232,.06)}
-.sa::after{content:" ▲";font-size:8px}
-.sd::after{content:" ▼";font-size:8px}
-
+.sa::after{content:" ▲";font-size:8px}.sd::after{content:" ▼";font-size:8px}
 .b{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
-.bh{background:rgba(62,207,142,.15);color:#3ecf8e}
-.bd{background:rgba(249,199,79,.15);color:#f9c74f}
-.ba{background:rgba(242,95,92,.15);color:#f25f5c}
-.bg{background:rgba(62,207,142,.12);color:#3ecf8e}
-.br{background:rgba(242,95,92,.12);color:#f25f5c}
-
+.bh{background:rgba(62,207,142,.15);color:#3ecf8e}.bd{background:rgba(249,199,79,.15);color:#f9c74f}.ba{background:rgba(242,95,92,.15);color:#f25f5c}
+.bg{background:rgba(62,207,142,.12);color:#3ecf8e}.br{background:rgba(242,95,92,.12);color:#f25f5c}
 .pager{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--text2)}
 .pager button{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 12px;border-radius:5px;cursor:pointer;font-size:11px}
 .pager button:hover:not(:disabled){background:var(--blue);border-color:var(--blue)}
 .pager button:disabled{opacity:.35;cursor:default}
-
 footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);border-top:1px solid var(--border)}
-
 @media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:1fr 1fr}.g21{grid-template-columns:1fr}}
 @media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -118,6 +110,19 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
 
 <!-- OVERVIEW -->
 <div class="page active" id="page-overview">
+  <div class="tab-filters">
+    <span class="tab-filter-label">📊 Overview Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Year From</label><select id="ov-year-from" onchange="applyOverviewFilters()"><option value="">Earliest</option></select></div>
+    <div class="fg"><label>Year To</label><select id="ov-year-to" onchange="applyOverviewFilters()"><option value="">Latest</option></select></div>
+    <div class="fg"><label>Result Focus</label><select id="ov-result" onchange="applyOverviewFilters()">
+      <option value="all">All Results</option>
+      <option value="home">Home Wins</option>
+      <option value="draw">Draws</option>
+      <option value="away">Away Wins</option>
+    </select></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('overview')">Reset</button>
+  </div>
   <div class="kpi-grid">
     <div class="kpi" style="--ac:#4f7fe8"><div class="kpi-label">Total Matches</div><div class="kpi-val" id="k-matches">-</div><div class="kpi-sub">in selection</div></div>
     <div class="kpi" style="--ac:#22d3ee"><div class="kpi-label">Leagues</div><div class="kpi-val" id="k-leagues">-</div><div class="kpi-sub">covered</div></div>
@@ -145,6 +150,19 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
 
 <!-- MARKET -->
 <div class="page" id="page-market">
+  <div class="tab-filters">
+    <span class="tab-filter-label">📈 Market Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Year From</label><select id="mkt-year-from" onchange="applyMarketFilters()"><option value="">Earliest</option></select></div>
+    <div class="fg"><label>Year To</label><select id="mkt-year-to" onchange="applyMarketFilters()"><option value="">Latest</option></select></div>
+    <div class="fg"><label>Margin Range</label><select id="mkt-margin" onchange="applyMarketFilters()">
+      <option value="all">All Margins</option>
+      <option value="tight">Tight (&lt;5%)</option>
+      <option value="normal">Normal (5–10%)</option>
+      <option value="high">High (&gt;10%)</option>
+    </select></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('market')">Reset</button>
+  </div>
   <div class="g4">
     <div class="kpi" style="--ac:#a78bfa"><div class="kpi-label">Avg Market Margin</div><div class="kpi-val" id="km-ovr">-</div><div class="kpi-sub">overround</div></div>
     <div class="kpi" style="--ac:#22d3ee"><div class="kpi-label">Avg Bookmakers</div><div class="kpi-val" id="km-bk">-</div><div class="kpi-sub">per match</div></div>
@@ -164,6 +182,19 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
 
 <!-- BETTING ROI -->
 <div class="page" id="page-betting">
+  <div class="tab-filters">
+    <span class="tab-filter-label">💰 ROI Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Bet Market</label><select id="bet-market" onchange="applyBettingFilters()">
+      <option value="all">All Markets</option>
+      <option value="home">Home Win</option>
+      <option value="draw">Draw</option>
+      <option value="away">Away Win</option>
+    </select></div>
+    <div class="fg"><label>Odds Min</label><input id="bet-odds-min" type="number" min="1" max="20" step="0.5" placeholder="e.g. 1.5" oninput="applyBettingFilters()"></div>
+    <div class="fg"><label>Odds Max</label><input id="bet-odds-max" type="number" min="1" max="50" step="0.5" placeholder="e.g. 5.0" oninput="applyBettingFilters()"></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('betting')">Reset</button>
+  </div>
   <div class="g4">
     <div class="kpi" style="--ac:#f25f5c"><div class="kpi-label">Blind Home ROI</div><div class="kpi-val" id="kb-home">-</div><div class="kpi-sub">bet every home</div></div>
     <div class="kpi" style="--ac:#f9c74f"><div class="kpi-label">Blind Draw ROI</div><div class="kpi-val" id="kb-draw">-</div><div class="kpi-sub">bet every draw</div></div>
@@ -171,41 +202,94 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
     <div class="kpi" style="--ac:#3ecf8e"><div class="kpi-label">Favourite Win Rate</div><div class="kpi-val" id="kb-fav">-</div><div class="kpi-sub">pre-match fav</div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="ct">ROI by Odds Range (Home Bets)</div><div class="cs">Green = positive ROI. Negative = house edge eating your stake.</div><div class="ch h260"><canvas id="c-odds-roi"></canvas></div></div>
+    <div class="card"><div class="ct">ROI by Odds Range</div><div class="cs" id="bet-roi-label">Home bets by odds bucket — green = positive ROI</div><div class="ch h260"><canvas id="c-odds-roi"></canvas></div></div>
     <div class="card"><div class="ct">Value Bet ROI</div><div class="cs">ROI when best-odds exceeds avg by X% — does the spread predict value?</div><div class="ch h260"><canvas id="c-value-roi"></canvas></div></div>
   </div>
   <div class="g2">
-    <div class="card"><div class="ct">Year-by-Year Betting ROI</div><div class="cs">Home / Draw / Away blind ROI trend</div><div class="ch h220"><canvas id="c-yearly-roi"></canvas></div></div>
+    <div class="card"><div class="ct">Year-by-Year Betting ROI</div><div class="cs" id="bet-trend-label">Home / Draw / Away blind ROI trend</div><div class="ch h220"><canvas id="c-yearly-roi"></canvas></div></div>
     <div class="card"><div class="ct">ROI by Odds Category</div><div class="cs">Expected return per favourite strength bucket</div><div class="ch h220"><canvas id="c-cat-roi"></canvas></div></div>
   </div>
-  <div class="card mb"><div class="ct">Win Rate vs Implied Probability</div><div class="cs">Actual home win % (blue) vs what odds imply (orange) — over/underpriced segments</div><div class="ch h220"><canvas id="c-wr-odds"></canvas></div></div>
+  <div class="card mb"><div class="ct">Win Rate vs Implied Probability</div><div class="cs">Actual home win % (blue) vs what odds imply (orange)</div><div class="ch h220"><canvas id="c-wr-odds"></canvas></div></div>
 </div>
 
 <!-- LEAGUES -->
 <div class="page" id="page-leagues">
+  <div class="tab-filters">
+    <span class="tab-filter-label">🏆 League Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Search League</label><input id="lg-search" type="text" placeholder="e.g. England…" oninput="applyLeagueFilters()"></div>
+    <div class="fg"><label>Min Matches</label><input id="lg-min-matches" type="number" min="0" step="50" placeholder="0" oninput="applyLeagueFilters()"></div>
+    <div class="fg"><label>Sort By</label><select id="lg-sort" onchange="applyLeagueFilters()">
+      <option value="matches">Match Volume</option>
+      <option value="home_pct">Home Win %</option>
+      <option value="away_pct">Away Win %</option>
+      <option value="avg_goals">Avg Goals</option>
+      <option value="avg_overround">Market Margin</option>
+      <option value="roi_home">Home ROI</option>
+      <option value="roi_away">Away ROI</option>
+      <option value="btts_pct">BTTS %</option>
+      <option value="over25_pct">Over 2.5 %</option>
+    </select></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('leagues')">Reset</button>
+  </div>
   <div class="g2 mb">
     <div class="card"><div class="ct">Leagues by Match Volume</div><div class="cs">Top 20 most covered leagues in selection</div><div class="ch h300"><canvas id="c-league-vol"></canvas></div></div>
     <div class="card"><div class="ct">Home Win % by League</div><div class="cs">Home advantage strength</div><div class="ch h300"><canvas id="c-league-home"></canvas></div></div>
   </div>
   <div class="card mb"><div class="ct">Result Stack by League</div><div class="cs">Home / Draw / Away % side by side</div><div class="ch h300"><canvas id="c-league-stack"></canvas></div></div>
-  <div class="card mb"><div class="ct">League Deep Stats</div><div class="cs">Click headers to sort</div><div class="tbl-wrap" id="league-table"></div></div>
+  <div class="card mb"><div class="ct">League Deep Stats</div><div class="cs">Click headers to sort · <span id="lg-count">-</span> leagues shown</div><div class="tbl-wrap" id="league-table"></div></div>
 </div>
 
 <!-- TEAMS -->
 <div class="page" id="page-teams">
-  <div class="g2">
-    <div class="card mb"><div class="ct">Top Home Teams by Win %</div><div class="cs">Min 30 home matches in selection</div><div class="ch h300"><canvas id="c-team-home"></canvas></div></div>
-    <div class="card mb"><div class="ct">Top Away Teams by Win %</div><div class="cs">Best travelers in selection</div><div class="ch h300"><canvas id="c-team-away"></canvas></div></div>
+  <div class="tab-filters">
+    <span class="tab-filter-label">👥 Team Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Search Team</label><input id="tm-search" type="text" placeholder="Team name…" oninput="applyTeamFilters()"></div>
+    <div class="fg"><label>Min Matches</label><input id="tm-min-matches" type="number" min="0" step="10" placeholder="30" oninput="applyTeamFilters()"></div>
+    <div class="fg"><label>View</label><select id="tm-view" onchange="applyTeamFilters()">
+      <option value="both">Home &amp; Away</option>
+      <option value="home">Home Only</option>
+      <option value="away">Away Only</option>
+    </select></div>
+    <div class="fg"><label>Sort By</label><select id="tm-sort" onchange="applyTeamFilters()">
+      <option value="win_pct">Win %</option>
+      <option value="goals_scored">Goals Scored</option>
+      <option value="roi">ROI</option>
+      <option value="btts_pct">BTTS %</option>
+    </select></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('teams')">Reset</button>
   </div>
-  <div class="card mb"><div class="ct">Home Performance Table</div><div class="cs">Click to sort</div><div class="tbl-wrap" id="team-home-table"></div></div>
-  <div class="card mb"><div class="ct">Away Performance Table</div><div class="cs">Click to sort</div><div class="tbl-wrap" id="team-away-table"></div></div>
+  <div class="g2" id="tm-charts-row">
+    <div class="card mb"><div class="ct" id="tm-chart-home-title">Top Home Teams by Win %</div><div class="cs">Min matches in selection</div><div class="ch h300"><canvas id="c-team-home"></canvas></div></div>
+    <div class="card mb"><div class="ct" id="tm-chart-away-title">Top Away Teams by Win %</div><div class="cs">Best travelers in selection</div><div class="ch h300"><canvas id="c-team-away"></canvas></div></div>
+  </div>
+  <div id="tm-home-section"><div class="card mb"><div class="ct">Home Performance Table</div><div class="cs">Click to sort · <span id="tm-home-count">-</span> teams shown</div><div class="tbl-wrap" id="team-home-table"></div></div></div>
+  <div id="tm-away-section"><div class="card mb"><div class="ct">Away Performance Table</div><div class="cs">Click to sort · <span id="tm-away-count">-</span> teams shown</div><div class="tbl-wrap" id="team-away-table"></div></div></div>
 </div>
 
 <!-- BOOKMAKERS -->
 <div class="page" id="page-bookmakers">
+  <div class="tab-filters">
+    <span class="tab-filter-label">📚 Bookie Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Market Focus</label><select id="bk-market" onchange="applyBkFilters()">
+      <option value="all">All Markets</option>
+      <option value="home">Home Win</option>
+      <option value="draw">Draw</option>
+      <option value="away">Away Win</option>
+    </select></div>
+    <div class="fg"><label>Top N Bookies</label><select id="bk-top-n" onchange="applyBkFilters()">
+      <option value="10">Top 10</option>
+      <option value="15">Top 15</option>
+      <option value="20">Top 20</option>
+      <option value="0">All</option>
+    </select></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('bookmakers')">Reset</button>
+  </div>
   <div class="g21">
-    <div class="card mb"><div class="ct">Best Odds Frequency — All Markets</div><div class="cs">How often each bookie led on home + draw + away</div><div class="ch h300"><canvas id="c-bk-all"></canvas></div></div>
-    <div class="card mb"><div class="ct">Market Share (Top 8)</div><div class="cs">Share of best-price slots</div><div class="ch h300"><canvas id="c-bk-donut"></canvas></div></div>
+    <div class="card mb"><div class="ct" id="bk-main-title">Best Odds Frequency — All Markets</div><div class="cs">How often each bookie led on best price</div><div class="ch h300"><canvas id="c-bk-all"></canvas></div></div>
+    <div class="card mb"><div class="ct">Market Share</div><div class="cs">Share of best-price slots (top 8)</div><div class="ch h300"><canvas id="c-bk-donut"></canvas></div></div>
   </div>
   <div class="g3">
     <div class="card mb"><div class="ct">Best Home Odds</div><div class="cs">Who leads on home win prices</div><div class="ch h200"><canvas id="c-bk-home"></canvas></div></div>
@@ -217,15 +301,20 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
 
 <!-- MATCHES -->
 <div class="page" id="page-matches">
-  <div style="display:flex;gap:10px;margin-bottom:var(--gap);flex-wrap:wrap">
-    <div class="fg"><label>Result</label><select id="mf-result" onchange="renderMatches()"><option value="">All</option><option value="home">Home Win</option><option value="draw">Draw</option><option value="away">Away Win</option></select></div>
-    <div class="fg"><label>BTTS</label><select id="mf-btts" onchange="renderMatches()"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
-    <div class="fg"><label>Over 2.5</label><select id="mf-o25" onchange="renderMatches()"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
-    <div class="fg"><label>Search team</label><input id="mf-team" type="text" placeholder="Team name…" oninput="renderMatches()"></div>
+  <div class="tab-filters">
+    <span class="tab-filter-label">🗂 Match Filters</span>
+    <div class="tab-filter-sep"></div>
+    <div class="fg"><label>Result</label><select id="mf-result" onchange="matchPage=0;renderMatches()"><option value="">All</option><option value="home">Home Win</option><option value="draw">Draw</option><option value="away">Away Win</option></select></div>
+    <div class="fg"><label>BTTS</label><select id="mf-btts" onchange="matchPage=0;renderMatches()"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
+    <div class="fg"><label>Over 2.5</label><select id="mf-o25" onchange="matchPage=0;renderMatches()"><option value="">All</option><option value="1">Yes</option><option value="0">No</option></select></div>
+    <div class="fg"><label>Search Team</label><input id="mf-team" type="text" placeholder="Team name…" oninput="matchPage=0;renderMatches()"></div>
+    <div class="fg"><label>Date From</label><input id="mf-date-from" type="text" placeholder="YYYY-MM-DD" oninput="matchPage=0;renderMatches()"></div>
+    <div class="fg"><label>Date To</label><input id="mf-date-to" type="text" placeholder="YYYY-MM-DD" oninput="matchPage=0;renderMatches()"></div>
+    <button class="btn-tab-clear" onclick="clearTabFilters('matches')">Reset</button>
   </div>
   <div class="card mb">
     <div class="ct">Match Explorer</div>
-    <div class="cs">Showing <span id="m-range">-</span> of <span id="m-total">-</span> · Filtered by global + match-level filters</div>
+    <div class="cs">Showing <span id="m-range">-</span> of <span id="m-total">-</span> matches</div>
     <div class="tbl-wrap" id="match-table"></div>
     <div class="pager">
       <button id="btn-prev" onclick="changePage(-1)" disabled>← Prev</button>
@@ -236,7 +325,7 @@ footer{padding:12px 20px;text-align:center;font-size:10px;color:var(--text3);bor
 </div>
 
 </div><!-- /content -->
-<footer>Sports Betting Analytics · 2005–2015 · 479,388 matches · 818 leagues · 32 bookmakers tracked · All charts update with filters</footer>
+<footer>Sports Betting Analytics · 2005–2015 · 479,388 matches · 818 leagues · 32 bookmakers · All charts update with filters</footer>
 </div>
 
 <script>
@@ -249,49 +338,49 @@ const CD={responsive:true,maintainAspectRatio:false,animation:false,
 const GR={color:'rgba(37,42,69,.5)'};
 const TX={color:'#7a82a8',font:{size:10}};
 
-// State
-let CUR = DATA.global; // current data slice
-let charts = {};
-let matchPage=0, PAGE=50;
+let CUR=DATA.global;
+let charts={};
+let matchPage=0,PAGE=50;
 let lSort={col:'matches',dir:'desc'};
 let tmSort={col:'home_win_pct',dir:'desc'};
 let taSort={col:'away_win_pct',dir:'desc'};
 
-/* ---- Filter logic ---- */
+/* ---- updC: top-level so all filter functions can use it ---- */
+function updC(id,labels,datasets){
+  if(!charts[id])return;
+  charts[id].data.labels=labels;
+  charts[id].data.datasets=datasets;
+  charts[id].update('none');
+}
+
+/* ---- Global filters ---- */
 function initFilters(){
   const ls=document.getElementById('f-league');
   const ys=document.getElementById('f-year');
   DATA.leagues.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;ls.appendChild(o);});
   DATA.years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;ys.appendChild(o);});
+
+  // Populate per-tab year dropdowns
+  ['ov-year-from','ov-year-to','mkt-year-from','mkt-year-to'].forEach(id=>{
+    const sel=document.getElementById(id);
+    DATA.years.forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o);});
+  });
 }
 
 function applyFilter(){
   const league=document.getElementById('f-league').value;
   const year=document.getElementById('f-year').value;
+  if(league) CUR=DATA.by_league[league]||DATA.global;
+  else if(year) CUR=DATA.by_year[String(year)]||DATA.global;
+  else CUR=DATA.global;
 
-  // Determine active slice
-  if(league && year){
-    // Intersection: filter recent_matches from league slice by year
-    const base = DATA.by_league[league] || DATA.global;
-    // Create a synthetic slice using league data but year-filtered matches
-    CUR = {...base};
-    // For charts, use league slice (best available); note in banner
-  } else if(league){
-    CUR = DATA.by_league[league] || DATA.global;
-  } else if(year){
-    CUR = DATA.by_year[String(year)] || DATA.global;
-  } else {
-    CUR = DATA.global;
-  }
-
-  // Update banner
-  const banner = document.getElementById('filter-banner');
-  const clear = document.getElementById('btn-clear');
+  const banner=document.getElementById('filter-banner');
+  const clear=document.getElementById('btn-clear');
   if(league||year){
     const parts=[];
     if(league) parts.push(`League: <strong>${league}</strong>`);
     if(year) parts.push(`Year: <strong>${year}</strong>`);
-    banner.innerHTML = `🔍 Filtered by ${parts.join(' + ')} — all charts and tables updated`;
+    banner.innerHTML=`🔍 Filtered by ${parts.join(' + ')} — all charts updated`;
     banner.classList.add('visible');
     clear.style.display='block';
     document.getElementById('f-league').classList.toggle('filter-active',!!league);
@@ -302,12 +391,10 @@ function applyFilter(){
     document.getElementById('f-league').classList.remove('filter-active');
     document.getElementById('f-year').classList.remove('filter-active');
   }
-
   updateAllCharts();
   updateKPIs();
-  sortedTable(CUR.league_stats||[],lSort,leagueCols,'league-table');
-  sortedTable(CUR.team_home||[],tmSort,teamHomeCols,'team-home-table');
-  sortedTable(CUR.team_away||[],taSort,teamAwayCols,'team-away-table');
+  applyLeagueFilters();
+  applyTeamFilters();
   renderBkTable();
   matchPage=0;
   renderMatches();
@@ -330,19 +417,15 @@ function updateKPIs(){
   set('k-goals',k.avg_goals||'-');
   set('k-btts',(k.btts_pct||0)+'%');
   set('k-o25',(k.over25_pct||0)+'%');
-  // Market
   set('km-ovr',(((k.avg_overround||1)-1)*100).toFixed(2)+'%');
   set('km-bk',k.avg_bookmakers||'-');
   set('km-fav',(k.fav_win_rate||0)+'%');
-  // Value trend average
   const vy=CUR.yearly||[];
   const avgVal=vy.length?vy.reduce((a,y)=>a+(y.avg_value_home||0),0)/vy.length:0;
   set('km-val',(avgVal*100).toFixed(2)+'%');
-  // Betting
-  const roi_h=(k.roi_home||0).toFixed(2)+'%';
-  const roi_d=(k.roi_draw||0).toFixed(2)+'%';
-  const roi_a=(k.roi_away||0).toFixed(2)+'%';
-  set('kb-home',roi_h);set('kb-draw',roi_d);set('kb-away',roi_a);
+  set('kb-home',(k.roi_home||0).toFixed(2)+'%');
+  set('kb-draw',(k.roi_draw||0).toFixed(2)+'%');
+  set('kb-away',(k.roi_away||0).toFixed(2)+'%');
   set('kb-fav',(k.fav_win_rate||0)+'%');
 }
 
@@ -356,46 +439,314 @@ function showTab(name){
   document.getElementById('page-'+name).classList.add('active');
 }
 
+/* ---- Per-tab filter: Overview ---- */
+function applyOverviewFilters(){
+  let y=CUR.yearly||[];
+  const yf=+document.getElementById('ov-year-from').value||0;
+  const yt=+document.getElementById('ov-year-to').value||9999;
+  if(yf||yt<9999) y=y.filter(r=>(+r.year>=yf||!yf)&&(+r.year<=yt||yt===9999));
+
+  updC('c-yearly',y.map(r=>r.year),[
+    {type:'bar',label:'Matches',data:y.map(r=>r.matches),backgroundColor:'rgba(79,127,232,.65)',borderColor:'#4f7fe8',borderWidth:1,borderRadius:4,yAxisID:'y'},
+    {type:'line',label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(2)),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:0.3},
+    {type:'line',label:'Home Win %',data:y.map(r=>r.home_win),borderColor:'#3ecf8e',backgroundColor:'transparent',borderWidth:2,pointRadius:3,yAxisID:'y3',tension:0.3},
+  ]);
+  updC('c-goals-trend',y.map(r=>r.year),[
+    {label:'BTTS %',data:y.map(r=>r.btts_pct),borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
+    {label:'Over 2.5 %',data:y.map(r=>r.over25_pct),borderColor:'#f472b6',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+    {label:'Avg Goals',data:y.map(r=>r.avg_goals),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3,yAxisID:'y2'},
+  ]);
+
+  // Result focus highlights monthly chart
+  const rf=document.getElementById('ov-result').value;
+  const mo=CUR.monthly||[];
+  if(rf==='home'){
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.25)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
+    ]);
+  } else if(rf==='draw'){
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'rgba(249,199,79,.2)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
+    ]);
+  } else if(rf==='away'){
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'rgba(242,95,92,.2)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
+    ]);
+  } else {
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+    ]);
+  }
+}
+
+/* ---- Per-tab filter: Market ---- */
+function applyMarketFilters(){
+  let y=CUR.yearly||[];
+  const yf=+document.getElementById('mkt-year-from').value||0;
+  const yt=+document.getElementById('mkt-year-to').value||9999;
+  if(yf||yt<9999) y=y.filter(r=>(+r.year>=yf||!yf)&&(+r.year<=yt||yt===9999));
+
+  updC('c-value-trend',y.map(r=>r.year),[
+    {label:'Home value',data:y.map(r=>+((r.avg_value_home||0)*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
+    {label:'Draw value',data:y.map(r=>+((r.avg_value_draw||0)*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+    {label:'Away value',data:y.map(r=>+((r.avg_value_away||0)*100).toFixed(2)),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+  ]);
+  updC('c-ovr-trend',y.map(r=>r.year),[
+    {label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(3)),borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
+  ]);
+
+  // Margin range filter on overround dist
+  const mg=document.getElementById('mkt-margin').value;
+  let od=CUR.ovr_dist||[];
+  if(mg==='tight') od=od.filter(o=>parseFloat(o.range)<1.05);
+  else if(mg==='normal') od=od.filter(o=>parseFloat(o.range)>=1.05&&parseFloat(o.range)<1.10);
+  else if(mg==='high') od=od.filter(o=>parseFloat(o.range)>=1.10);
+  updC('c-ovr-dist',od.map(o=>o.range.replace('[','').replace(')','').replace(', ','-')),[
+    {data:od.map(o=>o.count),backgroundColor:'rgba(167,139,250,.75)',borderWidth:0,borderRadius:4}
+  ]);
+}
+
+/* ---- Per-tab filter: Betting ROI ---- */
+function applyBettingFilters(){
+  const market=document.getElementById('bet-market').value;
+  const oddsMin=parseFloat(document.getElementById('bet-odds-min').value)||0;
+  const oddsMax=parseFloat(document.getElementById('bet-odds-max').value)||999;
+
+  let or=CUR.odds_roi||[];
+  if(oddsMin||oddsMax<999){
+    or=or.filter(r=>{
+      const parts=r.odds_range.replace('[','').replace(')','').replace(']','').split(',').map(parseFloat);
+      return parts[0]>=oddsMin&&(parts[1]||parts[0])<=oddsMax;
+    });
+  }
+
+  const y=CUR.yearly||[];
+  if(market==='home'||market==='all'){
+    updC('c-odds-roi',or.map(r=>r.odds_range),[
+      {label:'ROI %',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
+    ]);
+    set('bet-roi-label','Home bets by odds bucket — green = positive ROI');
+  }
+  if(market==='draw'){
+    set('bet-roi-label','Draw bets — ROI by odds bucket');
+  } else if(market==='away'){
+    set('bet-roi-label','Away bets — ROI by odds bucket');
+  }
+
+  // Year ROI trend filtered by market
+  if(market==='home'){
+    updC('c-yearly-roi',y.map(r=>r.year),[
+      {label:'Home ROI',data:y.map(r=>+(r.roi_home*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:3},
+    ]);
+    set('bet-trend-label','Home blind ROI year-on-year');
+  } else if(market==='draw'){
+    updC('c-yearly-roi',y.map(r=>r.year),[
+      {label:'Draw ROI',data:y.map(r=>+(r.roi_draw*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'rgba(249,199,79,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:3},
+    ]);
+    set('bet-trend-label','Draw blind ROI year-on-year');
+  } else if(market==='away'){
+    updC('c-yearly-roi',y.map(r=>r.year),[
+      {label:'Away ROI',data:y.map(r=>+(r.roi_away*100).toFixed(2)),borderColor:'#f25f5c',backgroundColor:'rgba(242,95,92,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:3},
+    ]);
+    set('bet-trend-label','Away blind ROI year-on-year');
+  } else {
+    updC('c-yearly-roi',y.map(r=>r.year),[
+      {label:'Home ROI',data:y.map(r=>+(r.roi_home*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+      {label:'Draw ROI',data:y.map(r=>+(r.roi_draw*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+      {label:'Away ROI',data:y.map(r=>+(r.roi_away*100).toFixed(2)),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
+    ]);
+    set('bet-trend-label','Home / Draw / Away blind ROI trend');
+  }
+}
+
+/* ---- Per-tab filter: Leagues ---- */
+function applyLeagueFilters(){
+  const search=(document.getElementById('lg-search').value||'').toLowerCase().trim();
+  const minM=+document.getElementById('lg-min-matches').value||0;
+  const sortCol=document.getElementById('lg-sort').value||'matches';
+
+  let ls=CUR.league_stats||[];
+  if(search) ls=ls.filter(l=>(l.league||'').toLowerCase().includes(search));
+  if(minM) ls=ls.filter(l=>l.matches>=minM);
+
+  // Sort
+  ls=[...ls].sort((a,b)=>{
+    const av=a[sortCol],bv=b[sortCol];
+    return typeof av==='string'?av.localeCompare(bv):bv-av;
+  });
+
+  const top20=ls.slice(0,20);
+  set('lg-count',ls.length);
+  lSort={col:sortCol,dir:'desc'};
+
+  updC('c-league-vol',top20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[
+    {data:top20.map(l=>l.matches),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}
+  ]);
+  updC('c-league-home',top20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[
+    {data:top20.map(l=>l.home_pct),backgroundColor:top20.map(l=>l.home_pct>50?'rgba(62,207,142,.8)':'rgba(79,127,232,.75)'),borderWidth:0,borderRadius:3}
+  ]);
+  updC('c-league-stack',top20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,18)),[
+    {label:'Home',data:top20.map(l=>l.home_pct),backgroundColor:'rgba(62,207,142,.8)',stack:'s'},
+    {label:'Draw',data:top20.map(l=>l.draw_pct),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
+    {label:'Away',data:top20.map(l=>l.away_pct),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
+  ]);
+
+  sortedTable(ls,lSort,leagueCols,'league-table');
+}
+
+/* ---- Per-tab filter: Teams ---- */
+function applyTeamFilters(){
+  const search=(document.getElementById('tm-search').value||'').toLowerCase().trim();
+  const minM=+document.getElementById('tm-min-matches').value||30;
+  const view=document.getElementById('tm-view').value;
+  const sortBy=document.getElementById('tm-sort').value;
+
+  let th=CUR.team_home||[];
+  let ta=CUR.team_away||[];
+
+  // Filter
+  if(search){
+    th=th.filter(t=>(t.home_team||'').toLowerCase().includes(search));
+    ta=ta.filter(t=>(t.away_team||'').toLowerCase().includes(search));
+  }
+  th=th.filter(t=>t.home_matches>=minM);
+  ta=ta.filter(t=>t.away_matches>=minM);
+
+  // Sort
+  const sortMap={win_pct:{home:'home_win_pct',away:'away_win_pct'},goals_scored:{home:'avg_goals_scored',away:'avg_goals_scored'},roi:{home:'roi_home',away:'roi_away'},btts_pct:{home:'btts_pct',away:'btts_pct'}};
+  const hCol=sortMap[sortBy]?.home||'home_win_pct';
+  const aCol=sortMap[sortBy]?.away||'away_win_pct';
+  th=[...th].sort((a,b)=>b[hCol]-a[hCol]);
+  ta=[...ta].sort((a,b)=>b[aCol]-a[aCol]);
+
+  // Show/hide sections based on view
+  const homeSection=document.getElementById('tm-home-section');
+  const awaySection=document.getElementById('tm-away-section');
+  const chartsRow=document.getElementById('tm-charts-row');
+  homeSection.style.display=(view==='away')?'none':'block';
+  awaySection.style.display=(view==='home')?'none':'block';
+  if(charts['c-team-home']) chartsRow.style.display=(view==='away')?'none':'';
+  if(charts['c-team-away']) chartsRow.style.display=(view==='home')?'none':'';
+  if(view==='home') document.getElementById('tm-charts-row').children[1].style.display='none';
+  else if(view==='away') document.getElementById('tm-charts-row').children[0].style.display='none';
+  else {document.getElementById('tm-charts-row').children[0].style.display='';document.getElementById('tm-charts-row').children[1].style.display='';}
+
+  const th15=th.slice(0,15);
+  const ta15=ta.slice(0,15);
+  set('tm-home-count',th.length);
+  set('tm-away-count',ta.length);
+
+  updC('c-team-home',th15.map(t=>t.home_team.substring(0,18)),[
+    {label:'Home Win %',data:th15.map(t=>t[hCol]),backgroundColor:'rgba(62,207,142,.8)',borderWidth:0,borderRadius:3}
+  ]);
+  updC('c-team-away',ta15.map(t=>t.away_team.substring(0,18)),[
+    {label:'Away Win %',data:ta15.map(t=>t[aCol]),backgroundColor:'rgba(79,127,232,.8)',borderWidth:0,borderRadius:3}
+  ]);
+
+  tmSort={col:hCol,dir:'desc'};
+  taSort={col:aCol,dir:'desc'};
+  sortedTable(th,tmSort,teamHomeCols,'team-home-table');
+  sortedTable(ta,taSort,teamAwayCols,'team-away-table');
+}
+
+/* ---- Per-tab filter: Bookmakers ---- */
+function applyBkFilters(){
+  const market=document.getElementById('bk-market').value;
+  const topN=+document.getElementById('bk-top-n').value||10;
+  const mkBk=CUR.bookies||{};
+
+  let bkData;
+  let title;
+  if(market==='home'){bkData=mkBk.home||[];title='Best Home Odds Frequency';}
+  else if(market==='draw'){bkData=mkBk.draw||[];title='Best Draw Odds Frequency';}
+  else if(market==='away'){bkData=mkBk.away||[];title='Best Away Odds Frequency';}
+  else{bkData=mkBk.all||[];title='Best Odds Frequency — All Markets';}
+
+  const bk=topN>0?bkData.slice(0,topN):bkData;
+  set('bk-main-title',title);
+
+  updC('c-bk-all',bk.map(b=>b.bookie),[
+    {label:'Best price count',data:bk.map(b=>b.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}
+  ]);
+  updC('c-bk-donut',bk.slice(0,8).map(b=>b.bookie),[
+    {data:bk.slice(0,8).map(b=>b.count),backgroundColor:C.slice(0,8).map(c=>c+'dd'),borderColor:'#161929',borderWidth:2}
+  ]);
+  renderBkTable();
+}
+
+/* ---- Clear per-tab filters ---- */
+function clearTabFilters(tab){
+  if(tab==='overview'){
+    document.getElementById('ov-year-from').value='';
+    document.getElementById('ov-year-to').value='';
+    document.getElementById('ov-result').value='all';
+    applyOverviewFilters();
+  } else if(tab==='market'){
+    document.getElementById('mkt-year-from').value='';
+    document.getElementById('mkt-year-to').value='';
+    document.getElementById('mkt-margin').value='all';
+    applyMarketFilters();
+  } else if(tab==='betting'){
+    document.getElementById('bet-market').value='all';
+    document.getElementById('bet-odds-min').value='';
+    document.getElementById('bet-odds-max').value='';
+    applyBettingFilters();
+  } else if(tab==='leagues'){
+    document.getElementById('lg-search').value='';
+    document.getElementById('lg-min-matches').value='';
+    document.getElementById('lg-sort').value='matches';
+    applyLeagueFilters();
+  } else if(tab==='teams'){
+    document.getElementById('tm-search').value='';
+    document.getElementById('tm-min-matches').value='';
+    document.getElementById('tm-view').value='both';
+    document.getElementById('tm-sort').value='win_pct';
+    applyTeamFilters();
+  } else if(tab==='bookmakers'){
+    document.getElementById('bk-market').value='all';
+    document.getElementById('bk-top-n').value='10';
+    applyBkFilters();
+  } else if(tab==='matches'){
+    document.getElementById('mf-result').value='';
+    document.getElementById('mf-btts').value='';
+    document.getElementById('mf-o25').value='';
+    document.getElementById('mf-team').value='';
+    document.getElementById('mf-date-from').value='';
+    document.getElementById('mf-date-to').value='';
+    matchPage=0;
+    renderMatches();
+  }
+}
+
 /* ---- Chart helpers ---- */
-function mkChart(id, type, labels, datasets, opts){
+function mkChart(id,type,labels,datasets,opts){
   const ctx=document.getElementById(id).getContext('2d');
   if(charts[id]) charts[id].destroy();
   charts[id]=new Chart(ctx,{type,data:{labels,datasets},options:{...CD,...opts}});
   return charts[id];
 }
-function upd(id,labels,datasets){
-  if(!charts[id])return;
-  charts[id].data.labels=labels;
-  charts[id].data.datasets=datasets.map((ds,i)=>({...charts[id].data.datasets[i],...ds}));
-  charts[id].update('none');
-}
-function setData(id, labels, datasets){
-  if(!charts[id]) return buildAllCharts();
-  charts[id].data.labels = labels;
-  // Replace datasets completely
-  charts[id].data.datasets = datasets;
-  charts[id].update('none');
-}
 
 /* ---- Build all charts (first render) ---- */
 function buildAllCharts(){
-  const d = CUR;
-  const y = d.yearly||[];
-  const mo = d.monthly||[];
-  const gd = d.goals_dist||[];
-  const sf = d.score_freq||[];
-  const u = d.upset||[];
-  const cal = d.calib_home||[];
-  const od = d.ovr_dist||[];
-  const or = d.odds_roi||[];
-  const va = d.value_analysis||[];
-  const bk = (d.bookies||{}).all||[];
-  const ls = d.league_stats||[];
-  const tl = d.top_leagues||[];
-  const th = d.team_home||[];
-  const ta = d.team_away||[];
+  const d=CUR;
+  const y=d.yearly||[];
+  const mo=d.monthly||[];
+  const gd=d.goals_dist||[];
+  const sf=d.score_freq||[];
+  const u=d.upset||[];
+  const cal=d.calib_home||[];
+  const od=d.ovr_dist||[];
+  const or=d.odds_roi||[];
+  const va=d.value_analysis||[];
+  const bk=(d.bookies||{}).all||[];
+  const ls=d.league_stats||[];
+  const tl=d.top_leagues||[];
+  const th=d.team_home||[];
+  const ta=d.team_away||[];
 
-  // === OVERVIEW ===
+  // OVERVIEW
   mkChart('c-yearly','bar',y.map(r=>r.year),[
     {type:'bar',label:'Matches',data:y.map(r=>r.matches),backgroundColor:'rgba(79,127,232,.65)',borderColor:'#4f7fe8',borderWidth:1,borderRadius:4,yAxisID:'y'},
     {type:'line',label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(2)),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:0.3},
@@ -407,13 +758,11 @@ function buildAllCharts(){
     {data:[d.kpis.home_win_rate,d.kpis.draw_rate,d.kpis.away_win_rate],backgroundColor:['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'],borderColor:'#161929',borderWidth:3}
   ],{cutout:'60%',plugins:{...CD.plugins,legend:{position:'bottom',labels:{color:'#7a82a8',usePointStyle:true,padding:12}},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}}});
 
-  mkChart('c-goals','bar',gd.map(g=>g.goals),[
-    {data:gd.map(g=>g.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:4}
-  ],{plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}}}});
+  mkChart('c-goals','bar',gd.map(g=>g.goals),[{data:gd.map(g=>g.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:4}],
+    {plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}}}});
 
-  mkChart('c-scores','bar',sf.slice(0,12).map(s=>s.score),[
-    {data:sf.slice(0,12).map(s=>s.count),backgroundColor:'rgba(167,139,250,.75)',borderWidth:0,borderRadius:3}
-  ],{plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}}}});
+  mkChart('c-scores','bar',sf.slice(0,12).map(s=>s.score),[{data:sf.slice(0,12).map(s=>s.count),backgroundColor:'rgba(167,139,250,.75)',borderWidth:0,borderRadius:3}],
+    {plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}}}});
 
   mkChart('c-monthly','line',mo.map(m=>m.month_name),[
     {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
@@ -433,7 +782,7 @@ function buildAllCharts(){
     {label:'Avg Goals',data:y.map(r=>r.avg_goals),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3,yAxisID:'y2'},
   ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y2:{position:'right',grid:{display:false},ticks:{...TX,color:'#f9c74f'}}}});
 
-  // === MARKET ===
+  // MARKET
   mkChart('c-calib','scatter',null,[
     {label:'Actual',data:cal.map(c=>({x:c.implied_pct,y:c.actual_rate})),backgroundColor:'#4f7fe8',pointRadius:7,pointHoverRadius:9},
     {label:'Perfect',data:[{x:0,y:0},{x:100,y:100}],type:'line',borderColor:'rgba(255,255,255,.2)',borderDash:[5,5],borderWidth:1.5,pointRadius:0,showLine:true},
@@ -448,7 +797,7 @@ function buildAllCharts(){
     {label:'Home value',data:y.map(r=>+((r.avg_value_home||0)*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
     {label:'Draw value',data:y.map(r=>+((r.avg_value_draw||0)*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
     {label:'Away value',data:y.map(r=>+((r.avg_value_away||0)*100).toFixed(2)),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
-  ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y+'%'}}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
+  ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
   mkChart('c-ovr-trend','line',y.map(r=>r.year),[
     {label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(3)),borderColor:'#fb923c',backgroundColor:'rgba(251,146,60,.1)',borderWidth:2.5,fill:true,tension:.3,pointRadius:4},
@@ -460,20 +809,20 @@ function buildAllCharts(){
     {label:'Away Win',data:u.map(r=>r.away_wins),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
   ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{stacked:true,grid:{display:false},ticks:TX},y:{stacked:true,max:100,grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
-  // === BETTING ROI ===
+  // BETTING ROI
   mkChart('c-odds-roi','bar',or.map(r=>r.odds_range),[
     {label:'ROI %',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
-  ],{plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,callbacks:{label:(ctx,i)=>`ROI: ${ctx.parsed.y}% · Win: ${or[ctx.dataIndex]?.win_rate}%`}}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
+  ],{plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
   mkChart('c-value-roi','bar',va.map(r=>r.bucket),[
     {label:'ROI %',data:va.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:va.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
-  ],{plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`ROI: ${ctx.parsed.y}% · Win: ${va[ctx.dataIndex]?.win_rate}%`}}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
+  ],{plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
   mkChart('c-yearly-roi','line',y.map(r=>r.year),[
     {label:'Home ROI',data:y.map(r=>+(r.roi_home*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
     {label:'Draw ROI',data:y.map(r=>+(r.roi_draw*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
     {label:'Away ROI',data:y.map(r=>+(r.roi_away*100).toFixed(2)),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
-  ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y+'%'}}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
+  ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
   mkChart('c-cat-roi','bar',u.map(r=>r.label),[
     {label:'Home ROI %',data:u.map(r=>+(r.roi_home*100).toFixed(2)),backgroundColor:u.map(r=>r.roi_home>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}
@@ -484,48 +833,51 @@ function buildAllCharts(){
     {label:'Implied Win %',data:or.map(r=>+(100/r.avg_odds).toFixed(1)),backgroundColor:'rgba(251,146,60,.6)',borderRadius:4,borderWidth:0},
   ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
-  // === LEAGUES ===
-  mkChart('c-league-vol','bar',tl.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[
-    {data:tl.map(l=>l.matches),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}
-  ],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  // LEAGUES
+  const tl20=tl.slice(0,20);
+  mkChart('c-league-vol','bar',tl20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[{data:tl20.map(l=>l.matches),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 
-  mkChart('c-league-home','bar',ls.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[
-    {data:ls.map(l=>l.home_pct),backgroundColor:ls.map(l=>l.home_pct>50?'rgba(62,207,142,.8)':'rgba(79,127,232,.75)'),borderWidth:0,borderRadius:3}
-  ],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  const ls20=ls.slice(0,20);
+  mkChart('c-league-home','bar',ls20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[{data:ls20.map(l=>l.home_pct),backgroundColor:ls20.map(l=>l.home_pct>50?'rgba(62,207,142,.8)':'rgba(79,127,232,.75)'),borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 
-  mkChart('c-league-stack','bar',ls.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,18)),[
-    {label:'Home',data:ls.map(l=>l.home_pct),backgroundColor:'rgba(62,207,142,.8)',stack:'s'},
-    {label:'Draw',data:ls.map(l=>l.draw_pct),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
-    {label:'Away',data:ls.map(l=>l.away_pct),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
+  mkChart('c-league-stack','bar',ls20.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,18)),[
+    {label:'Home',data:ls20.map(l=>l.home_pct),backgroundColor:'rgba(62,207,142,.8)',stack:'s'},
+    {label:'Draw',data:ls20.map(l=>l.draw_pct),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
+    {label:'Away',data:ls20.map(l=>l.away_pct),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
   ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{stacked:true,grid:{display:false},ticks:{...TX,maxRotation:45}},y:{stacked:true,max:100,grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
-  // === TEAMS ===
+  // TEAMS
   const th15=th.slice(0,15);
-  mkChart('c-team-home','bar',th15.map(t=>t.home_team.substring(0,18)),[
-    {label:'Home Win %',data:th15.map(t=>t.home_win_pct),backgroundColor:'rgba(62,207,142,.8)',borderWidth:0,borderRadius:3}
-  ],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`Win: ${th15[ctx.dataIndex]?.home_win_pct}% · Matches: ${th15[ctx.dataIndex]?.home_matches}`}}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  mkChart('c-team-home','bar',th15.map(t=>t.home_team.substring(0,18)),[{label:'Home Win %',data:th15.map(t=>t.home_win_pct),backgroundColor:'rgba(62,207,142,.8)',borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 
   const ta15=ta.slice(0,15);
-  mkChart('c-team-away','bar',ta15.map(t=>t.away_team.substring(0,18)),[
-    {label:'Away Win %',data:ta15.map(t=>t.away_win_pct),backgroundColor:'rgba(79,127,232,.8)',borderWidth:0,borderRadius:3}
-  ],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`Win: ${ta15[ctx.dataIndex]?.away_win_pct}% · Matches: ${ta15[ctx.dataIndex]?.away_matches}`}}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  mkChart('c-team-away','bar',ta15.map(t=>t.away_team.substring(0,18)),[{label:'Away Win %',data:ta15.map(t=>t.away_win_pct),backgroundColor:'rgba(79,127,232,.8)',borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>v+'%'}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 
-  // === BOOKMAKERS ===
-  mkChart('c-bk-all','bar',bk.map(b=>b.bookie),[
-    {label:'Best price count',data:bk.map(b=>b.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}
-  ],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>`${fmtN(ctx.parsed.x)} (${bk[ctx.dataIndex]?.pct}%)`}}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  // BOOKMAKERS
+  mkChart('c-bk-all','bar',bk.slice(0,10).map(b=>b.bookie),[{label:'Best price count',data:bk.slice(0,10).map(b=>b.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 
   mkChart('c-bk-donut','doughnut',bk.slice(0,8).map(b=>b.bookie),[
     {data:bk.slice(0,8).map(b=>b.count),backgroundColor:C.slice(0,8).map(c=>c+'dd'),borderColor:'#161929',borderWidth:2}
   ],{cutout:'55%',plugins:{...CD.plugins,legend:{position:'bottom',labels:{color:'#7a82a8',usePointStyle:true,padding:10,font:{size:10}}}}});
 
-  const mkBk = d.bookies||{};
-  mkChart('c-bk-home','bar',(mkBk.home||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.home||[]).map(b=>b.count),backgroundColor:'rgba(62,207,142,.75)',borderWidth:0,borderRadius:3}],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
-  mkChart('c-bk-draw','bar',(mkBk.draw||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.draw||[]).map(b=>b.count),backgroundColor:'rgba(249,199,79,.75)',borderWidth:0,borderRadius:3}],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
-  mkChart('c-bk-away','bar',(mkBk.away||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.away||[]).map(b=>b.count),backgroundColor:'rgba(242,95,92,.75)',borderWidth:0,borderRadius:3}],{indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  const mkBk=d.bookies||{};
+  const h10=(mkBk.home||[]).slice(0,10);
+  const d10=(mkBk.draw||[]).slice(0,10);
+  const a10=(mkBk.away||[]).slice(0,10);
+  mkChart('c-bk-home','bar',h10.map(b=>b.bookie.substring(0,14)),[{data:h10.map(b=>b.count),backgroundColor:'rgba(62,207,142,.75)',borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  mkChart('c-bk-draw','bar',d10.map(b=>b.bookie.substring(0,14)),[{data:d10.map(b=>b.count),backgroundColor:'rgba(249,199,79,.75)',borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
+  mkChart('c-bk-away','bar',a10.map(b=>b.bookie.substring(0,14)),[{data:a10.map(b=>b.count),backgroundColor:'rgba(242,95,92,.75)',borderWidth:0,borderRadius:3}],
+    {indexAxis:'y',plugins:{...CD.plugins,legend:{display:false}},scales:{x:{grid:GR,ticks:{...TX,callback:v=>fmtN(v)}},y:{grid:{display:false},ticks:{...TX,font:{size:10}}}}});
 }
 
-/* ---- Update all charts with new data ---- */
+/* ---- Update all charts when global filter changes ---- */
 function updateAllCharts(){
   const d=CUR;
   const y=d.yearly||[];
@@ -538,20 +890,8 @@ function updateAllCharts(){
   const or=d.odds_roi||[];
   const va=d.value_analysis||[];
   const bk=(d.bookies||{}).all||[];
-  const ls=d.league_stats||[];
-  const tl=d.top_leagues||[];
-  const th=d.team_home||[];
-  const ta=d.team_away||[];
   const mkBk=d.bookies||{};
-  const th15=th.slice(0,15);
-  const ta15=ta.slice(0,15);
-
-  function updC(id,labels,datasets){
-    if(!charts[id])return;
-    charts[id].data.labels=labels;
-    charts[id].data.datasets=datasets;
-    charts[id].update('none');
-  }
+  const k=d.kpis||{};
 
   // Overview
   updC('c-yearly',y.map(r=>r.year),[
@@ -559,10 +899,7 @@ function updateAllCharts(){
     {type:'line',label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(2)),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:0.3},
     {type:'line',label:'Home Win %',data:y.map(r=>r.home_win),borderColor:'#3ecf8e',backgroundColor:'transparent',borderWidth:2,pointRadius:3,yAxisID:'y3',tension:0.3},
   ]);
-  const k=d.kpis||{};
-  updC('c-donut',['Home Win','Draw','Away Win'],[
-    {data:[k.home_win_rate||0,k.draw_rate||0,k.away_win_rate||0],backgroundColor:['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'],borderColor:'#161929',borderWidth:3}
-  ]);
+  updC('c-donut',['Home Win','Draw','Away Win'],[{data:[k.home_win_rate||0,k.draw_rate||0,k.away_win_rate||0],backgroundColor:['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'],borderColor:'#161929',borderWidth:3}]);
   updC('c-goals',gd.map(g=>g.goals),[{data:gd.map(g=>g.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:4}]);
   updC('c-scores',sf.slice(0,12).map(s=>s.score),[{data:sf.slice(0,12).map(s=>s.count),backgroundColor:'rgba(167,139,250,.75)',borderWidth:0,borderRadius:3}]);
   updC('c-monthly',mo.map(m=>m.month_name),[
@@ -580,7 +917,6 @@ function updateAllCharts(){
     {label:'Over 2.5 %',data:y.map(r=>r.over25_pct),borderColor:'#f472b6',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
     {label:'Avg Goals',data:y.map(r=>r.avg_goals),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3,yAxisID:'y2'},
   ]);
-
   // Market
   updC('c-calib',null,[
     {label:'Actual',data:cal.map(c=>({x:c.implied_pct,y:c.actual_rate})),backgroundColor:'#4f7fe8',pointRadius:7,pointHoverRadius:9},
@@ -598,10 +934,9 @@ function updateAllCharts(){
     {label:'Draw',data:u.map(r=>r.draws),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
     {label:'Away Win',data:u.map(r=>r.away_wins),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
   ]);
-
-  // Betting ROI
+  // Betting
   updC('c-odds-roi',or.map(r=>r.odds_range),[{label:'ROI %',data:or.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:or.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}]);
-  updC('c-value-roi',va.map(r=>r.bucket),[{label:'ROI %',data:va.map(r=>+(r.roi*100).toFixed(2)),backgroundColor:va.map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}]);
+  updC('c-value-roi',(d.value_analysis||[]).map(r=>r.bucket),[{label:'ROI %',data:(d.value_analysis||[]).map(r=>+(r.roi*100).toFixed(2)),backgroundColor:(d.value_analysis||[]).map(r=>r.roi>=0?'rgba(62,207,142,.75)':'rgba(242,95,92,.75)'),borderWidth:0,borderRadius:4}]);
   updC('c-yearly-roi',y.map(r=>r.year),[
     {label:'Home ROI',data:y.map(r=>+(r.roi_home*100).toFixed(2)),borderColor:'#3ecf8e',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
     {label:'Draw ROI',data:y.map(r=>+(r.roi_draw*100).toFixed(2)),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:2,tension:.3,pointRadius:3},
@@ -612,26 +947,13 @@ function updateAllCharts(){
     {label:'Actual Win %',data:or.map(r=>r.win_rate),backgroundColor:'rgba(79,127,232,.75)',borderRadius:4,borderWidth:0},
     {label:'Implied Win %',data:or.map(r=>+(100/r.avg_odds).toFixed(1)),backgroundColor:'rgba(251,146,60,.6)',borderRadius:4,borderWidth:0},
   ]);
-
-  // Leagues
-  updC('c-league-vol',tl.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[{data:tl.map(l=>l.matches),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}]);
-  updC('c-league-home',ls.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,20)),[{data:ls.map(l=>l.home_pct),backgroundColor:ls.map(l=>l.home_pct>50?'rgba(62,207,142,.8)':'rgba(79,127,232,.75)'),borderWidth:0,borderRadius:3}]);
-  updC('c-league-stack',ls.map(l=>l.league.replace(/^[^:]+: /,'').substring(0,18)),[
-    {label:'Home',data:ls.map(l=>l.home_pct),backgroundColor:'rgba(62,207,142,.8)',stack:'s'},
-    {label:'Draw',data:ls.map(l=>l.draw_pct),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
-    {label:'Away',data:ls.map(l=>l.away_pct),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
-  ]);
-
-  // Teams
-  updC('c-team-home',th15.map(t=>t.home_team.substring(0,18)),[{label:'Home Win %',data:th15.map(t=>t.home_win_pct),backgroundColor:'rgba(62,207,142,.8)',borderWidth:0,borderRadius:3}]);
-  updC('c-team-away',ta15.map(t=>t.away_team.substring(0,18)),[{label:'Away Win %',data:ta15.map(t=>t.away_win_pct),backgroundColor:'rgba(79,127,232,.8)',borderWidth:0,borderRadius:3}]);
-
   // Bookmakers
-  updC('c-bk-all',bk.map(b=>b.bookie),[{label:'Best price count',data:bk.map(b=>b.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}]);
+  const bk10=bk.slice(0,10);
+  updC('c-bk-all',bk10.map(b=>b.bookie),[{label:'Best price count',data:bk10.map(b=>b.count),backgroundColor:C.map(c=>c+'bb'),borderWidth:0,borderRadius:3}]);
   updC('c-bk-donut',bk.slice(0,8).map(b=>b.bookie),[{data:bk.slice(0,8).map(b=>b.count),backgroundColor:C.slice(0,8).map(c=>c+'dd'),borderColor:'#161929',borderWidth:2}]);
-  updC('c-bk-home',(mkBk.home||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.home||[]).map(b=>b.count),backgroundColor:'rgba(62,207,142,.75)',borderWidth:0,borderRadius:3}]);
-  updC('c-bk-draw',(mkBk.draw||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.draw||[]).map(b=>b.count),backgroundColor:'rgba(249,199,79,.75)',borderWidth:0,borderRadius:3}]);
-  updC('c-bk-away',(mkBk.away||[]).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.away||[]).map(b=>b.count),backgroundColor:'rgba(242,95,92,.75)',borderWidth:0,borderRadius:3}]);
+  updC('c-bk-home',(mkBk.home||[]).slice(0,10).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.home||[]).slice(0,10).map(b=>b.count),backgroundColor:'rgba(62,207,142,.75)',borderWidth:0,borderRadius:3}]);
+  updC('c-bk-draw',(mkBk.draw||[]).slice(0,10).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.draw||[]).slice(0,10).map(b=>b.count),backgroundColor:'rgba(249,199,79,.75)',borderWidth:0,borderRadius:3}]);
+  updC('c-bk-away',(mkBk.away||[]).slice(0,10).map(b=>b.bookie.substring(0,14)),[{data:(mkBk.away||[]).slice(0,10).map(b=>b.count),backgroundColor:'rgba(242,95,92,.75)',borderWidth:0,borderRadius:3}]);
 }
 
 /* ---- Tables ---- */
@@ -657,7 +979,7 @@ const leagueCols=[
   {f:'roi_away',l:'ROI A',r:roi,sf:"lsort('roi_away')"},
   {f:'fav_win_rate',l:'Fav%',r:v=>v?(+(v*100).toFixed(1))+'%':'-',sf:"lsort('fav_win_rate')"},
 ];
-function lsort(col){if(lSort.col===col)lSort.dir=lSort.dir==='desc'?'asc':'desc';else{lSort.col=col;lSort.dir='desc';}sortedTable(CUR.league_stats||[],lSort,leagueCols,'league-table');}
+function lsort(col){if(lSort.col===col)lSort.dir=lSort.dir==='desc'?'asc':'desc';else{lSort.col=col;lSort.dir='desc';}applyLeagueFilters();}
 
 const teamHomeCols=[
   {f:'home_team',l:'Team',r:v=>v,sf:"thsort('home_team')"},
@@ -669,7 +991,7 @@ const teamHomeCols=[
   {f:'over25_pct',l:'O2.5%',r:pct,sf:"thsort('over25_pct')"},
   {f:'roi_home',l:'ROI',r:roi,sf:"thsort('roi_home')"},
 ];
-function thsort(col){if(tmSort.col===col)tmSort.dir=tmSort.dir==='desc'?'asc':'desc';else{tmSort.col=col;tmSort.dir='desc';}sortedTable(CUR.team_home||[],tmSort,teamHomeCols,'team-home-table');}
+function thsort(col){if(tmSort.col===col)tmSort.dir=tmSort.dir==='desc'?'asc':'desc';else{tmSort.col=col;tmSort.dir='desc';}applyTeamFilters();}
 
 const teamAwayCols=[
   {f:'away_team',l:'Team',r:v=>v,sf:"tasort('away_team')"},
@@ -679,7 +1001,7 @@ const teamAwayCols=[
   {f:'avg_goals_conceded',l:'Avg Conceded',r:v=>(+v).toFixed(2),sf:"tasort('avg_goals_conceded')"},
   {f:'roi_away',l:'ROI',r:roi,sf:"tasort('roi_away')"},
 ];
-function tasort(col){if(taSort.col===col)taSort.dir=taSort.dir==='desc'?'asc':'desc';else{taSort.col=col;taSort.dir='desc';}sortedTable(CUR.team_away||[],taSort,teamAwayCols,'team-away-table');}
+function tasort(col){if(taSort.col===col)taSort.dir=taSort.dir==='desc'?'asc':'desc';else{taSort.col=col;taSort.dir='desc';}applyTeamFilters();}
 
 function sortedTable(data,sort,cols,container){
   const sorted=[...data].sort((a,b)=>{
@@ -696,7 +1018,13 @@ function sortedTable(data,sort,cols,container){
 }
 
 function renderBkTable(){
-  const bk=(CUR.bookies||{}).all||[];
+  const market=document.getElementById('bk-market')?document.getElementById('bk-market').value:'all';
+  const mkBk=CUR.bookies||{};
+  let bk;
+  if(market==='home') bk=mkBk.home||[];
+  else if(market==='draw') bk=mkBk.draw||[];
+  else if(market==='away') bk=mkBk.away||[];
+  else bk=mkBk.all||[];
   let h='<table><thead><tr><th>#</th><th>Bookmaker</th><th>Best Price Count</th><th>Share</th></tr></thead><tbody>';
   bk.forEach((b,i)=>{h+=`<tr><td>${i+1}</td><td>${b.bookie}</td><td>${fmtN(b.count)}</td><td><div style="display:flex;align-items:center;gap:6px"><div style="width:${Math.min(Math.round(b.pct*3),120)}px;height:5px;background:${C[i%C.length]};border-radius:3px"></div>${b.pct}%</div></td></tr>`;});
   h+='</tbody></table>';
@@ -709,6 +1037,8 @@ function renderMatches(){
   const btts=document.getElementById('mf-btts').value;
   const o25=document.getElementById('mf-o25').value;
   const team=document.getElementById('mf-team').value.toLowerCase().trim();
+  const dateFrom=document.getElementById('mf-date-from').value.trim();
+  const dateTo=document.getElementById('mf-date-to').value.trim();
 
   const src=CUR.recent_matches||[];
   const filtered=src.filter(r=>{
@@ -716,13 +1046,15 @@ function renderMatches(){
     if(btts!==''){if(btts==='1'&&!r.btts)return false;if(btts==='0'&&r.btts)return false;}
     if(o25!==''){if(o25==='1'&&!r.over25)return false;if(o25==='0'&&r.over25)return false;}
     if(team&&!r.home_team?.toLowerCase().includes(team)&&!r.away_team?.toLowerCase().includes(team))return false;
+    if(dateFrom&&r.match_date<dateFrom)return false;
+    if(dateTo&&r.match_date>dateTo)return false;
     return true;
   });
 
   const total=filtered.length;
   document.getElementById('m-total').textContent=fmtN(total);
   const start=matchPage*PAGE,end=Math.min(start+PAGE,total);
-  document.getElementById('m-range').textContent=(start+1)+'-'+end;
+  document.getElementById('m-range').textContent=total===0?'0':(start+1)+'-'+end;
   document.getElementById('page-info').textContent='Page '+(matchPage+1)+' of '+Math.max(1,Math.ceil(total/PAGE));
   document.getElementById('btn-prev').disabled=matchPage===0;
   document.getElementById('btn-next').disabled=end>=total;
@@ -745,6 +1077,9 @@ function init(){
   initFilters();
   updateKPIs();
   buildAllCharts();
+  set('lg-count',(CUR.league_stats||[]).length);
+  set('tm-home-count',(CUR.team_home||[]).length);
+  set('tm-away-count',(CUR.team_away||[]).length);
   sortedTable(CUR.league_stats||[],lSort,leagueCols,'league-table');
   sortedTable(CUR.team_home||[],tmSort,teamHomeCols,'team-home-table');
   sortedTable(CUR.team_away||[],taSort,teamAwayCols,'team-away-table');
