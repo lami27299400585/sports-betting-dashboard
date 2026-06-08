@@ -442,13 +442,11 @@ function showTab(name){
 /* ---- Per-tab filter: Overview ---- */
 function applyOverviewFilters(){
   let y=CUR.yearly||[];
-  // FIX: independent year-from / year-to guards (no yt||9999 defaulting to 0)
   const yfVal=document.getElementById('ov-year-from').value;
   const ytVal=document.getElementById('ov-year-to').value;
   if(yfVal) y=y.filter(r=>+r.year>=+yfVal);
   if(ytVal) y=y.filter(r=>+r.year<=+ytVal);
 
-  // Year-dependent charts
   updC('c-yearly',y.map(r=>r.year),[
     {type:'bar',label:'Matches',data:y.map(r=>r.matches),backgroundColor:'rgba(79,127,232,.65)',borderColor:'#4f7fe8',borderWidth:1,borderRadius:4,yAxisID:'y'},
     {type:'line',label:'Overround %',data:y.map(r=>+((r.avg_overround-1)*100).toFixed(2)),borderColor:'#fb923c',backgroundColor:'transparent',borderWidth:2.5,pointRadius:4,yAxisID:'y2',tension:0.3},
@@ -460,60 +458,60 @@ function applyOverviewFilters(){
     {label:'Avg Goals',data:y.map(r=>r.avg_goals),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3,yAxisID:'y2'},
   ]);
 
-  // FIX: Result focus now updates donut + monthly + upset (all 3 charts react)
   const rf=document.getElementById('ov-result').value;
   const k=CUR.kpis||{};
   const mo=CUR.monthly||[];
   const u=CUR.upset||[];
 
-  // Opacity maps: highlight selected, dim others
-  const full=['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'];
-  const dimmed=['rgba(62,207,142,.18)','rgba(249,199,79,.18)','rgba(242,95,92,.18)'];
-  const focusBg={
-    all:   full,
-    home:  ['rgba(62,207,142,.95)',dimmed[1],dimmed[2]],
-    draw:  [dimmed[0],'rgba(249,199,79,.95)',dimmed[2]],
-    away:  [dimmed[0],dimmed[1],'rgba(242,95,92,.95)'],
-  };
-  updC('c-donut',['Home Win','Draw','Away Win'],[
-    {data:[k.home_win_rate||0,k.draw_rate||0,k.away_win_rate||0],
-     backgroundColor:focusBg[rf]||full,borderColor:'#161929',borderWidth:3}
-  ]);
+  if(!rf||rf==='all'){
+    // Restore full views — use mkChart to rebuild from scratch so structure is correct
+    mkChart('c-donut','doughnut',['Home Win','Draw','Away Win'],[
+      {data:[k.home_win_rate||0,k.draw_rate||0,k.away_win_rate||0],
+       backgroundColor:['rgba(62,207,142,.85)','rgba(249,199,79,.85)','rgba(242,95,92,.85)'],borderColor:'#161929',borderWidth:3}
+    ],{cutout:'60%',plugins:{...CD.plugins,legend:{position:'bottom',labels:{color:'#7a82a8',usePointStyle:true,padding:12}},tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}}});
 
-  // Upset: brighten selected bar, dim others
-  const hBg=rf==='all'||rf==='home'?'rgba(62,207,142,.85)':'rgba(62,207,142,.15)';
-  const dBg=rf==='all'||rf==='draw'?'rgba(249,199,79,.85)':'rgba(249,199,79,.15)';
-  const aBg=rf==='all'||rf==='away'?'rgba(242,95,92,.85)':'rgba(242,95,92,.15)';
-  updC('c-upset',u.map(r=>r.label),[
-    {label:'Home Win',data:u.map(r=>r.home_wins),backgroundColor:hBg,stack:'s'},
-    {label:'Draw',data:u.map(r=>r.draws),backgroundColor:dBg,stack:'s'},
-    {label:'Away Win',data:u.map(r=>r.away_wins),backgroundColor:aBg,stack:'s'},
-  ]);
+    mkChart('c-upset','bar',u.map(r=>r.label),[
+      {label:'Home Win',data:u.map(r=>r.home_wins),backgroundColor:'rgba(62,207,142,.8)',stack:'s'},
+      {label:'Draw',data:u.map(r=>r.draws),backgroundColor:'rgba(249,199,79,.8)',stack:'s'},
+      {label:'Away Win',data:u.map(r=>r.away_wins),backgroundColor:'rgba(242,95,92,.8)',stack:'s'},
+    ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},scales:{x:{stacked:true,grid:{display:false},ticks:TX},y:{stacked:true,max:100,grid:GR,ticks:{...TX,callback:v=>v+'%'}}}});
 
-  // Monthly: bold selected line, ghost others
-  const mo_all=[
-    {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
-    {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
-    {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
-  ];
-  const mo_focus={
-    home:[
-      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.25)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
-      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'rgba(249,199,79,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'rgba(242,95,92,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-    ],
-    draw:[
-      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'rgba(62,207,142,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'rgba(249,199,79,.2)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
-      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'rgba(242,95,92,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-    ],
-    away:[
-      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'rgba(62,207,142,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'rgba(249,199,79,.25)',backgroundColor:'transparent',borderWidth:1,tension:.3,pointRadius:2},
-      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'rgba(242,95,92,.2)',borderWidth:3,fill:true,tension:.3,pointRadius:5},
-    ],
-  };
-  updC('c-monthly',mo.map(m=>m.month_name), mo_focus[rf]||mo_all);
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.1)',borderWidth:2,fill:true,tension:.3,pointRadius:3},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:'#f9c74f',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:'#f25f5c',backgroundColor:'transparent',borderWidth:1.5,tension:.3,pointRadius:3},
+    ]);
+  } else {
+    // Focused view: donut → 2-slice (selected vs rest), upset → single bar, monthly → one bold line
+    const cfg={
+      home:{label:'Home Wins',rate:k.home_win_rate||0,color:'#3ecf8e',colorA:'rgba(62,207,142,.9)',dataKey:'home_wins',moKey:'home_pct',moBg:'rgba(62,207,142,.25)'},
+      draw:{label:'Draws',    rate:k.draw_rate||0,    color:'#f9c74f',colorA:'rgba(249,199,79,.9)',dataKey:'draws',    moKey:'draw_pct',moBg:'rgba(249,199,79,.2)'},
+      away:{label:'Away Wins',rate:k.away_win_rate||0, color:'#f25f5c',colorA:'rgba(242,95,92,.9)', dataKey:'away_wins',moKey:'away_pct',moBg:'rgba(242,95,92,.2)'},
+    }[rf];
+
+    // Donut: 2-slice (selected % vs remaining %)
+    mkChart('c-donut','doughnut',[cfg.label,'Other'],[
+      {data:[cfg.rate, +(100-cfg.rate).toFixed(1)],
+       backgroundColor:[cfg.colorA,'rgba(37,42,69,.7)'],
+       borderColor:'#161929',borderWidth:3}
+    ],{cutout:'62%',plugins:{...CD.plugins,
+      legend:{position:'bottom',labels:{color:'#7a82a8',usePointStyle:true,padding:12}},
+      tooltip:{...CD.plugins.tooltip,callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}}});
+
+    // Upset: simple non-stacked bar for the selected result only
+    mkChart('c-upset','bar',u.map(r=>r.label),[
+      {label:cfg.label+' %',data:u.map(r=>r[cfg.dataKey]),
+       backgroundColor:cfg.colorA,borderWidth:0,borderRadius:4}
+    ],{plugins:{...CD.plugins,legend:{...CD.plugins.legend,position:'top'}},
+      scales:{x:{grid:{display:false},ticks:TX},y:{grid:GR,max:100,ticks:{...TX,callback:v=>v+'%'}}}});
+
+    // Monthly: one bold focused line, ghost the others
+    updC('c-monthly',mo.map(m=>m.month_name),[
+      {label:'Home %',data:mo.map(m=>m.home_pct),borderColor:rf==='home'?'#3ecf8e':'rgba(62,207,142,.2)',backgroundColor:rf==='home'?'rgba(62,207,142,.2)':'transparent',borderWidth:rf==='home'?3:1,fill:rf==='home',tension:.3,pointRadius:rf==='home'?5:2},
+      {label:'Draw %',data:mo.map(m=>m.draw_pct),borderColor:rf==='draw'?'#f9c74f':'rgba(249,199,79,.2)',backgroundColor:rf==='draw'?'rgba(249,199,79,.15)':'transparent',borderWidth:rf==='draw'?3:1,fill:rf==='draw',tension:.3,pointRadius:rf==='draw'?5:2},
+      {label:'Away %',data:mo.map(m=>m.away_pct),borderColor:rf==='away'?'#f25f5c':'rgba(242,95,92,.2)',backgroundColor:rf==='away'?'rgba(242,95,92,.15)':'transparent',borderWidth:rf==='away'?3:1,fill:rf==='away',tension:.3,pointRadius:rf==='away'?5:2},
+    ]);
+  }
 }
 
 /* ---- Per-tab filter: Market ---- */
